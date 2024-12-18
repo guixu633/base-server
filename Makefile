@@ -1,2 +1,2 @@
 build:
-	go build -o cmd/server main.go
+	go build -o cmd/base-server main.go
