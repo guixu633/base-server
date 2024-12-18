@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
-	httpServer := http.NewServer(8000, svc)
+	httpServer := http.NewServer(8001, svc)
 	if err != nil {
 		os.Exit(1)
 	}
