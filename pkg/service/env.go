@@ -3,6 +3,8 @@ package service
 import (
 	"os"
 	"strings"
+
+	"github.com/guixu633/base-server/module/config"
 )
 
 func (s *Service) ParseEnv() map[string]string {
@@ -14,4 +16,8 @@ func (s *Service) ParseEnv() map[string]string {
 		}
 	}
 	return envMap
+}
+
+func (s *Service) GetConfig() *config.Config {
+	return s.cfg
 }

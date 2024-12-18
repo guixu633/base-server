@@ -10,6 +10,7 @@ import (
 )
 
 type Service struct {
+	cfg    *config.Config
 	client *http.Client
 	oss    *oss.Oss
 }
@@ -28,6 +29,7 @@ func NewService(cfg *config.Config) *Service {
 	svc := &Service{
 		client: client,
 		oss:    oss,
+		cfg:    cfg,
 	}
 	return svc
 }
