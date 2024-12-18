@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (s *service) ParseEnv() map[string]string {
+func (s *Service) ParseEnv() map[string]string {
 	envMap := make(map[string]string)
 	for _, env := range os.Environ() {
 		pair := strings.SplitN(env, "=", 2)

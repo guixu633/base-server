@@ -12,11 +12,11 @@ import (
 
 type Server struct {
 	http.Server
-	svc  service.Service
+	svc  *service.Service
 	port int
 }
 
-func NewServer(port int, svc service.Service) *Server {
+func NewServer(port int, svc *service.Service) *Server {
 	server := &Server{
 		Server: http.Server{
 			Addr:           fmt.Sprintf(":%d", port),

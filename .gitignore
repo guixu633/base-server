@@ -1,2 +1,3 @@
 cmd/
 nohup.out
+config.toml

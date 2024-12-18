@@ -3,23 +3,31 @@ package service
 import (
 	"net/http"
 	"time"
+
+	"github.com/guixu633/base-server/module/config"
+	"github.com/guixu633/base-server/module/oss"
+	"github.com/sirupsen/logrus"
 )
 
-type Service interface {
-	ParseEnv() map[string]string
-}
-
-type service struct {
+type Service struct {
 	client *http.Client
+	oss    *oss.Oss
 }
 
-func NewService() (Service, error) {
+func NewService(cfg *config.Config) *Service {
 	client := &http.Client{
 		Timeout: time.Minute,
 	}
 
-	svc := &service{
-		client: client,
+	oss, err := oss.NewOss(&cfg.Oss)
+	if err != nil {
+		logrus.WithField("err", err).Error("初始化oss失败")
+		panic(err)
 	}
-	return svc, nil
+
+	svc := &Service{
+		client: client,
+		oss:    oss,
+	}
+	return svc
 }
