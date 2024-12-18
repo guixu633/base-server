@@ -12,11 +12,13 @@ import (
 
 type Server struct {
 	http.Server
-	svc  *service.Service
-	port int
+	svc      *service.Service
+	port     int
+	certFile string
+	keyFile  string
 }
 
-func NewServer(port int, svc *service.Service) *Server {
+func NewServer(port int, svc *service.Service, certFile, keyFile string) *Server {
 	server := &Server{
 		Server: http.Server{
 			Addr:           fmt.Sprintf(":%d", port),
@@ -25,8 +27,10 @@ func NewServer(port int, svc *service.Service) *Server {
 			IdleTimeout:    1200 * time.Second,
 			MaxHeaderBytes: 1 << 20,
 		},
-		svc:  svc,
-		port: port,
+		svc:      svc,
+		port:     port,
+		certFile: certFile,
+		keyFile:  keyFile,
 	}
 
 	r := gin.Default()
@@ -38,6 +42,6 @@ func NewServer(port int, svc *service.Service) *Server {
 }
 
 func (s *Server) ListenAndServe() error {
-	logrus.Infof("http server listen on port: %d", s.port)
-	return s.Server.ListenAndServe()
+	logrus.Infof("https server listen on port: %d", s.port)
+	return s.Server.ListenAndServeTLS(s.certFile, s.keyFile)
 }
