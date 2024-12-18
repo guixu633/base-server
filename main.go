@@ -34,7 +34,7 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
-	httpServer := http.NewServer(8001, svc, "certificate/root_bundle.crt", "certificate/root_bundle.key")
+	httpServer := http.NewServer(8001, svc, "certificate/guixuu.com.crt", "certificate/guixuu.com.key")
 	if err != nil {
 		os.Exit(1)
 	}

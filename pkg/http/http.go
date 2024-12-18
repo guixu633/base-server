@@ -43,5 +43,9 @@ func NewServer(port int, svc *service.Service, certFile, keyFile string) *Server
 
 func (s *Server) ListenAndServe() error {
 	logrus.Infof("https server listen on port: %d", s.port)
-	return s.Server.ListenAndServeTLS(s.certFile, s.keyFile)
+	if err := s.Server.ListenAndServeTLS(s.certFile, s.keyFile); err != nil && err != http.ErrServerClosed {
+		logrus.Errorf("listen and serve failed: %v", err)
+		return err
+	}
+	return nil
 }
