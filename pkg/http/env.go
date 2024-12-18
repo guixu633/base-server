@@ -30,3 +30,7 @@ func (s *Server) ParseAllEnv(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, result)
 }
+
+func (s *Server) GetConfig(c *gin.Context) {
+	c.JSON(http.StatusOK, s.svc.GetConfig())
+}
