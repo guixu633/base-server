@@ -7,6 +7,11 @@ require (
 	github.com/alecthomas/kong v1.6.0
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/gin-gonic/gin v1.10.0
+	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
+	github.com/gordonklaus/portaudio v0.0.0-20230709114228-aafa478834f5
+	github.com/gorilla/websocket v1.5.3
+	github.com/robotn/gohook v0.41.0
+	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
 )
@@ -36,6 +41,7 @@ require (
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/vcaesar/keycode v0.10.1 // indirect
 	golang.org/x/arch v0.12.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/net v0.32.0 // indirect
