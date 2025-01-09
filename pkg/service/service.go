@@ -31,7 +31,11 @@ func NewService(cfg *config.Config) *Service {
 	}
 
 	workflow := workflow.NewWorkflow(&cfg.Workflow, client)
-	bot, err := telegram.GetBot(&cfg.Telegram, workflow, true)
+	var useProxy bool
+	if cfg.Meta.Env == "local" || cfg.Meta.Env == "" {
+		useProxy = true
+	}
+	bot, err := telegram.GetBot(&cfg.Telegram, workflow, useProxy)
 	if err != nil {
 		logrus.WithField("err", err).Error("初始化telegram失败")
 		panic(err)
