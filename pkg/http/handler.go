@@ -11,4 +11,6 @@ func (s *Server) RawHandler(r *gin.Engine) {
 
 	r.GET("/oss/tree/*path", s.OssGetTree)
 	r.GET("/oss/blob/*path", s.OssGetBlob)
+	r.GET("/vdb/crypto-article", s.GetCryptoArticle)
+	r.POST("/vdb/crypto-article", s.UpsertCryptoArticle)
 }

@@ -3,11 +3,14 @@ package config
 import "github.com/BurntSushi/toml"
 
 type Config struct {
-	Meta     Meta     `toml:"meta"`
-	Oss      Oss      `toml:"oss"`
-	LLM      LLM      `toml:"llm"`
-	Workflow Workflow `toml:"workflow"`
-	Telegram Telegram `toml:"telegram"`
+	Meta          Meta          `toml:"meta"`
+	Oss           Oss           `toml:"oss"`
+	LLM           LLM           `toml:"llm"`
+	Workflow      Workflow      `toml:"workflow"`
+	Telegram      Telegram      `toml:"telegram"`
+	Qdrant        Qdrant        `toml:"qdrant"`
+	Embedding     Embedding     `toml:"embedding"`
+	CryptoArticle CryptoArticle `toml:"crypto_article"`
 }
 
 type Meta struct {
@@ -32,6 +35,27 @@ type Workflow struct {
 
 type Telegram struct {
 	ApiToken string `toml:"api_token"`
+}
+
+type Qdrant struct {
+	Host      string `toml:"host"`
+	Port      int    `toml:"port"`
+	ApiKey    string `toml:"api_key"`
+	Dimension int    `toml:"dimension"`
+}
+
+type Embedding struct {
+	Url       string `toml:"url"`
+	ApiKey    string `toml:"api_key"`
+	Model     string `toml:"model"`
+	Dimension int    `toml:"dimension"`
+}
+
+type CryptoArticle struct {
+	Collection     string  `toml:"collection"`
+	ScoreThreshold float32 `toml:"score_threshold"`
+	Limit          uint64  `toml:"limit"`
+	HoursLimit     uint64  `toml:"hours_limit"`
 }
 
 func LoadConfig(path string) (*Config, error) {

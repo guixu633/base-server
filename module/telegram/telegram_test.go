@@ -3,7 +3,9 @@ package telegram
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"testing"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/guixu633/base-server/module/config"
@@ -67,7 +69,16 @@ func getBot(t *testing.T) *TGBot {
 	cfg, err := config.LoadConfig("../../config.toml")
 	assert.NoError(t, err)
 	workflow := workflow.NewWorkflow(&cfg.Workflow, &http.Client{})
-	bot, err := GetBot(&cfg.Telegram, workflow, true)
+
+	proxyUrl, _ := url.Parse("http://127.0.0.1:7890") // 根据你的代理情况修改
+	client := &http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(proxyUrl),
+		},
+		Timeout: time.Second * 10,
+	}
+
+	bot, err := GetBot(&cfg.Telegram, workflow, client)
 	assert.NoError(t, err)
 	bot.bot.Debug = true
 	return bot

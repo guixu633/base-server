@@ -30,15 +30,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	svc := service.NewService(cfg)
+	svc, err := service.NewService(cfg)
 	if err != nil {
 		os.Exit(1)
 	}
 	httpServer := http.NewServer(8001, svc)
 	// httpsServer := http.NewHttpsServer(8002, svc, "certificate/guixuu.com.crt", "certificate/guixuu.com.key")
-	if err != nil {
-		os.Exit(1)
-	}
 	httpServer.ListenAndServe()
 	// httpsServer.ListenAndServeHttps()
 }
