@@ -34,7 +34,7 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
-	httpServer := http.NewServer(8001, svc)
+	httpServer := http.NewServer(8002, svc)
 	// httpsServer := http.NewHttpsServer(8002, svc, "certificate/guixuu.com.crt", "certificate/guixuu.com.key")
 	httpServer.ListenAndServe()
 	// httpsServer.ListenAndServeHttps()
