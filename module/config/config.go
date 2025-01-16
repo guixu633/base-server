@@ -11,6 +11,7 @@ type Config struct {
 	Qdrant        Qdrant        `toml:"qdrant"`
 	Embedding     Embedding     `toml:"embedding"`
 	CryptoArticle CryptoArticle `toml:"crypto_article"`
+	Coingecko     Coingecko     `toml:"coingecko"`
 }
 
 type Meta struct {
@@ -56,6 +57,11 @@ type CryptoArticle struct {
 	ScoreThreshold float32 `toml:"score_threshold"`
 	Limit          uint64  `toml:"limit"`
 	HoursLimit     uint64  `toml:"hours_limit"`
+}
+
+type Coingecko struct {
+	Url    string `toml:"url"`
+	ApiKey string `toml:"api_key"`
 }
 
 func LoadConfig(path string) (*Config, error) {

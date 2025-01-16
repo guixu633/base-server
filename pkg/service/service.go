@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/guixu633/base-server/module/coingecko"
 	"github.com/guixu633/base-server/module/config"
 	"github.com/guixu633/base-server/module/embedding"
 	"github.com/guixu633/base-server/module/oss"
@@ -16,12 +17,13 @@ import (
 )
 
 type Service struct {
-	cfg      *config.Config
-	client   *http.Client
-	oss      *oss.Oss
-	workflow *workflow.Workflow
-	telegram *telegram.TGBot
-	qdrant   *qdrant.Qdrant
+	cfg       *config.Config
+	client    *http.Client
+	oss       *oss.Oss
+	workflow  *workflow.Workflow
+	telegram  *telegram.TGBot
+	qdrant    *qdrant.Qdrant
+	coingecko *coingecko.Coingecko
 }
 
 func NewService(cfg *config.Config) (*Service, error) {
@@ -65,13 +67,16 @@ func NewService(cfg *config.Config) (*Service, error) {
 		return nil, err
 	}
 
+	coingecko := coingecko.NewCoingecko(&cfg.Coingecko, client)
+
 	svc := &Service{
-		client:   client,
-		oss:      oss,
-		cfg:      cfg,
-		workflow: workflow,
-		telegram: bot,
-		qdrant:   qdrant,
+		client:    client,
+		oss:       oss,
+		cfg:       cfg,
+		workflow:  workflow,
+		telegram:  bot,
+		qdrant:    qdrant,
+		coingecko: coingecko,
 	}
 
 	go bot.Response()
