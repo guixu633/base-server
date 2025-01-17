@@ -27,6 +27,7 @@ func (b *TGBot) Response() {
 		b.users[chatID] = convID
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, answer)
+		msg.ParseMode = tgbotapi.ModeMarkdownV2
 		// msg.ReplyToMessageID = update.Message.MessageID
 
 		if _, err := b.bot.Send(msg); err != nil {
