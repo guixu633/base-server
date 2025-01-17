@@ -39,7 +39,7 @@ func (w *Workflow) CallChatflowBlock(ctx context.Context, token, query, conversa
 		return "", "", fmt.Errorf("JSON编码失败: %v", err)
 	}
 
-	logrus.WithField("body", string(jsonBody)).Info(ctx, "workflow call block with inputs")
+	logrus.WithField("body", string(jsonBody)).Info("workflow call block with inputs")
 
 	// 构造请求
 	url := fmt.Sprintf("%s/v1/chat-messages", w.cfg.Url)
