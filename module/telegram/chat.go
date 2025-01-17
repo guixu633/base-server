@@ -20,6 +20,13 @@ func (b *TGBot) Response() {
 		}
 
 		chatID := update.Message.Chat.ID
+
+		// 添加命令处理逻辑
+		if update.Message.IsCommand() {
+			b.handleCommand(update.Message)
+			continue
+		}
+
 		convID := b.users[chatID]
 		convID, answer, err := b.workflow.DemoChat(context.Background(), update.Message.Text, convID)
 		if err != nil {
@@ -40,25 +47,6 @@ func (b *TGBot) Response() {
 	}
 }
 
-// func formatTelegramMessage(text string) string {
-// 	// 1. 将标题转换为加粗文本
-// 	// text = regexp.MustCompile(`### (.+)`).ReplaceAllString(text, "*$1*")
-
-// 	// 2. 处理粗体 ** 到单个 *
-// 	text = regexp.MustCompile(`\*\*(.*?)\*\*`).ReplaceAllString(text, "*$1*")
-
-// 	// 3. 处理特殊字符
-// 	special := []string{"_", "[", "]", "(", ")", "~", "`", ">", "+", "-", "=", "|", "{", "}", ".", "!"}
-// 	for _, char := range special {
-// 		text = strings.ReplaceAll(text, char, "\\"+char)
-// 	}
-
-// 	// 4. 处理百分比符号
-// 	text = strings.ReplaceAll(text, "%", "\\%")
-
-// 	return text
-// }
-
 func formatTelegramMessage(text string) string {
 	// 1. 处理标题的 '#' 符号
 	text = strings.ReplaceAll(text, "#", "\\#")
@@ -73,4 +61,22 @@ func formatTelegramMessage(text string) string {
 	text = regexp.MustCompile(`\*\*(.*?)\*\*`).ReplaceAllString(text, "*$1*")
 
 	return text
+}
+
+// 添加新的命令处理函数
+func (b *TGBot) handleCommand(message *tgbotapi.Message) {
+	msg := tgbotapi.NewMessage(message.Chat.ID, "")
+
+	switch message.Command() {
+	case "start":
+		msg.Text = "欢迎使用本机器人！"
+	case "help":
+		msg.Text = "这是帮助信息..."
+	default:
+		msg.Text = "未知命令，请使用 /help 查看可用命令"
+	}
+
+	if _, err := b.bot.Send(msg); err != nil {
+		logrus.Errorf("发送命令响应消息错误: %v", err)
+	}
 }

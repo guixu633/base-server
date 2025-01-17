@@ -12,9 +12,9 @@ import (
 func TestRetrievalCryptoArticle(t *testing.T) {
 	q := getQdrant(t)
 	req := RetrievalRequest{
-		KnowledgeID: "crypto_article",
+		KnowledgeID: "crypto_article_24h",
 		Query:       "比特币",
-		Settings:    RetrievalSettings{TopK: 10, ScoreThreshold: 0.5},
+		Settings:    RetrievalSettings{TopK: 10, ScoreThreshold: 0.75},
 	}
 	resp, err := q.Retrieval(context.Background(), req)
 	assert.NoError(t, err)
