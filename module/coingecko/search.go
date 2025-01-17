@@ -8,7 +8,8 @@ import (
 )
 
 type CurrentInfoResponse struct {
-	MarketData MarketDataResponse `json:"market_data"`
+	MarketData   MarketDataResponse `json:"market_data"`
+	Localization map[string]string  `json:"localization"`
 }
 
 type MarketDataResponse struct {
@@ -34,6 +35,7 @@ type MarketDataResponse struct {
 }
 
 type MarketDate struct {
+	Name                         string  `json:"coin_name"`
 	CurrentPrice                 float64 `json:"current_price"`
 	AllTimeHigh                  float64 `json:"all_time_high"`
 	AllTimeHighDate              string  `json:"all_time_high_date"`
@@ -55,33 +57,35 @@ type MarketDate struct {
 	MarketCapChangePercentage24h float64 `json:"market_cap_change_percentage_24h"`
 }
 
-func (m MarketDataResponse) ToMarketDate() *MarketDate {
+func (i CurrentInfoResponse) ToMarketDate() *MarketDate {
+	market := i.MarketData
 	return &MarketDate{
-		CurrentPrice:                 m.CurrentPrice["usd"],
-		AllTimeHigh:                  m.AllTimeHigh["usd"],
-		AllTimeHighDate:              m.AllTimeHighDate["usd"],
-		AllTimeLow:                   m.AllTimeLow["usd"],
-		AllTimeLowDate:               m.AllTimeLowDate["usd"],
-		MarketCap:                    m.MarketCap["usd"],
-		TotalVolume:                  m.TotalVolume["usd"],
-		High24h:                      m.High24h["usd"],
-		Low24h:                       m.Low24h["usd"],
-		PriceChange24h:               m.PriceChange24h,
-		PriceChangePercentage24h:     m.PriceChangePercentage24h,
-		PriceChangePercentage7d:      m.PriceChangePercentage7d,
-		PriceChangePercentage14d:     m.PriceChangePercentage14d,
-		PriceChangePercentage30d:     m.PriceChangePercentage30d,
-		PriceChangePercentage60d:     m.PriceChangePercentage60d,
-		PriceChangePercentage200d:    m.PriceChangePercentage200d,
-		PriceChangePercentage1y:      m.PriceChangePercentage1y,
-		MarketCapChange24h:           m.MarketCapChange24h,
-		MarketCapChangePercentage24h: m.MarketCapChangePercentage24h,
+		Name:                         i.Localization["zh"],
+		CurrentPrice:                 market.CurrentPrice["usd"],
+		AllTimeHigh:                  market.AllTimeHigh["usd"],
+		AllTimeHighDate:              market.AllTimeHighDate["usd"],
+		AllTimeLow:                   market.AllTimeLow["usd"],
+		AllTimeLowDate:               market.AllTimeLowDate["usd"],
+		MarketCap:                    market.MarketCap["usd"],
+		TotalVolume:                  market.TotalVolume["usd"],
+		High24h:                      market.High24h["usd"],
+		Low24h:                       market.Low24h["usd"],
+		PriceChange24h:               market.PriceChange24h,
+		PriceChangePercentage24h:     market.PriceChangePercentage24h,
+		PriceChangePercentage7d:      market.PriceChangePercentage7d,
+		PriceChangePercentage14d:     market.PriceChangePercentage14d,
+		PriceChangePercentage30d:     market.PriceChangePercentage30d,
+		PriceChangePercentage60d:     market.PriceChangePercentage60d,
+		PriceChangePercentage200d:    market.PriceChangePercentage200d,
+		PriceChangePercentage1y:      market.PriceChangePercentage1y,
+		MarketCapChange24h:           market.MarketCapChange24h,
+		MarketCapChangePercentage24h: market.MarketCapChangePercentage24h,
 	}
 }
 
 func (c *Coingecko) Search(ctx context.Context, coinID string) (*MarketDate, error) {
 	// 构建请求 URL
-	url := fmt.Sprintf("%s/coins/%s?developer_data=false&community_data=false&tickers=false&localization=false",
+	url := fmt.Sprintf("%s/coins/%s?developer_data=false&community_data=false&tickers=false",
 		c.cfg.Url, coinID)
 
 	// 创建新的 HTTP 请求
@@ -111,5 +115,5 @@ func (c *Coingecko) Search(ctx context.Context, coinID string) (*MarketDate, err
 		return nil, fmt.Errorf("解析响应失败: %w", err)
 	}
 
-	return response.MarketData.ToMarketDate(), nil
+	return response.ToMarketDate(), nil
 }

@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -10,8 +11,20 @@ import (
 
 func (s *Server) GetCryptoArticle(c *gin.Context) {
 	query := c.Query("query")
+	topkStr := c.Query("topk")
+	scoreThresholdStr := c.Query("score_threshold")
+	topk, err := strconv.Atoi(topkStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid topk"})
+		return
+	}
+	scoreThreshold, err := strconv.ParseFloat(scoreThresholdStr, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid score threshold"})
+		return
+	}
 	ctx := c.Request.Context()
-	article, err := s.svc.GetCryptoArticle(ctx, query)
+	article, err := s.svc.GetCryptoArticle(ctx, query, topk, scoreThreshold)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -58,4 +71,18 @@ func (s *Server) UpsertCryptoArticle(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
+}
+
+func (s *Server) Retrieval(c *gin.Context) {
+	request := &qdrant.RetrievalRequest{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	resp, err := s.svc.Retrieval(c.Request.Context(), *request)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resp)
 }

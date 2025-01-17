@@ -21,6 +21,20 @@ type CryptoArticle struct {
 	Url         string  `json:"url"`
 }
 
+func (c *CryptoArticle) ToRetrievalRecord() RetrievalRecord {
+	return RetrievalRecord{
+		Content: c.Content,
+		Score:   c.Score,
+		Title:   c.Title,
+		Metadata: map[string]any{
+			"id":           c.Id,
+			"publish_time": c.PublishTime,
+			"src":          c.Src,
+			"url":          c.Url,
+		},
+	}
+}
+
 func (q *Qdrant) GetCryptoArticleInfo() (*qdrant.CollectionInfo, error) {
 	info, err := q.client.GetCollectionInfo(context.Background(), q.cfgCryptoArticle.Collection)
 	if err != nil {
@@ -72,7 +86,7 @@ func (q *Qdrant) UpsertCryptoArticle(ctx context.Context, article *CryptoArticle
 	})
 }
 
-func (q *Qdrant) SearchCryptoArticle(ctx context.Context, query string) ([]*CryptoArticle, error) {
+func (q *Qdrant) SearchCryptoArticle(ctx context.Context, query string, topk int, scoreThreshold float64) ([]*CryptoArticle, error) {
 	startTime := time.Now().Add(-time.Duration(q.cfgCryptoArticle.HoursLimit) * time.Hour)
 	endTime := time.Now()
 
@@ -85,7 +99,7 @@ func (q *Qdrant) SearchCryptoArticle(ctx context.Context, query string) ([]*Cryp
 		},
 	}
 
-	results, err := q.Search(ctx, q.cfgCryptoArticle.Collection, query, q.cfgCryptoArticle.ScoreThreshold, q.cfgCryptoArticle.Limit, filter)
+	results, err := q.Search(ctx, q.cfgCryptoArticle.Collection, query, float32(scoreThreshold), uint64(topk), filter)
 	if err != nil {
 		return nil, err
 	}
@@ -105,8 +119,8 @@ func (q *Qdrant) SearchCryptoArticle(ctx context.Context, query string) ([]*Cryp
 	return data, nil
 }
 
-func (q *Qdrant) SearchCryptoArticleStr(ctx context.Context, query string) (string, error) {
-	data, err := q.SearchCryptoArticle(ctx, query)
+func (q *Qdrant) SearchCryptoArticleStr(ctx context.Context, query string, topk int, scoreThreshold float64) (string, error) {
+	data, err := q.SearchCryptoArticle(ctx, query, topk, scoreThreshold)
 	if err != nil {
 		return "", err
 	}
@@ -119,4 +133,16 @@ func (q *Qdrant) SearchCryptoArticleStr(ctx context.Context, query string) (stri
 		sb.WriteString("---\n")
 	}
 	return sb.String(), nil
+}
+
+func (q *Qdrant) RetrievalCryptoArticle(ctx context.Context, req RetrievalRequest) (RetrievalResponse, error) {
+	articles, err := q.SearchCryptoArticle(ctx, req.Query, req.Settings.TopK, req.Settings.ScoreThreshold)
+	if err != nil {
+		return RetrievalResponse{}, err
+	}
+	records := make([]RetrievalRecord, 0, len(articles))
+	for _, article := range articles {
+		records = append(records, article.ToRetrievalRecord())
+	}
+	return RetrievalResponse{Records: records}, nil
 }
