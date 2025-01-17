@@ -29,8 +29,10 @@ type RetrievalRecord struct {
 
 func (q *Qdrant) Retrieval(ctx context.Context, req RetrievalRequest) (RetrievalResponse, error) {
 	switch req.KnowledgeID {
-	case "crypto_article":
-		return q.RetrievalCryptoArticle(ctx, req)
+	case "crypto_article_1h":
+		return q.RetrievalCryptoArticle1H(ctx, req)
+	case "crypto_article_24h":
+		return q.RetrievalCryptoArticle24H(ctx, req)
 	default:
 		return RetrievalResponse{}, fmt.Errorf("unknown knowledge id: %s", req.KnowledgeID)
 	}

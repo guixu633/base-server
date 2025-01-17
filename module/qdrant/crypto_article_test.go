@@ -68,7 +68,7 @@ func TestParseTime(t *testing.T) {
 func TestSearchCryptoArticle(t *testing.T) {
 	qdrant := getQdrant(t)
 	start := time.Now()
-	results, err := qdrant.SearchCryptoArticle(context.Background(), "AIOZ突破1.15美元，24小时涨幅达28.0%", 10, 0.5)
+	results, err := qdrant.SearchCryptoArticle(context.Background(), "AIOZ突破1.15美元，24小时涨幅达28.0%", 10, 0.5, 24*time.Hour)
 	assert.NoError(t, err)
 	for _, result := range results {
 		json, err := json.MarshalIndent(result, "", "  ")

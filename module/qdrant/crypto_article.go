@@ -86,8 +86,8 @@ func (q *Qdrant) UpsertCryptoArticle(ctx context.Context, article *CryptoArticle
 	})
 }
 
-func (q *Qdrant) SearchCryptoArticle(ctx context.Context, query string, topk int, scoreThreshold float64) ([]*CryptoArticle, error) {
-	startTime := time.Now().Add(-time.Duration(q.cfgCryptoArticle.HoursLimit) * time.Hour)
+func (q *Qdrant) SearchCryptoArticle(ctx context.Context, query string, topk int, scoreThreshold float64, timeRange time.Duration) ([]*CryptoArticle, error) {
+	startTime := time.Now().Add(-timeRange)
 	endTime := time.Now()
 
 	filter := &qdrant.Filter{
@@ -120,7 +120,7 @@ func (q *Qdrant) SearchCryptoArticle(ctx context.Context, query string, topk int
 }
 
 func (q *Qdrant) SearchCryptoArticleStr(ctx context.Context, query string, topk int, scoreThreshold float64) (string, error) {
-	data, err := q.SearchCryptoArticle(ctx, query, topk, scoreThreshold)
+	data, err := q.SearchCryptoArticle(ctx, query, topk, scoreThreshold, 24*time.Hour)
 	if err != nil {
 		return "", err
 	}
@@ -135,8 +135,20 @@ func (q *Qdrant) SearchCryptoArticleStr(ctx context.Context, query string, topk 
 	return sb.String(), nil
 }
 
-func (q *Qdrant) RetrievalCryptoArticle(ctx context.Context, req RetrievalRequest) (RetrievalResponse, error) {
-	articles, err := q.SearchCryptoArticle(ctx, req.Query, req.Settings.TopK, req.Settings.ScoreThreshold)
+func (q *Qdrant) RetrievalCryptoArticle1H(ctx context.Context, req RetrievalRequest) (RetrievalResponse, error) {
+	articles, err := q.SearchCryptoArticle(ctx, req.Query, req.Settings.TopK, req.Settings.ScoreThreshold, 1*time.Hour)
+	if err != nil {
+		return RetrievalResponse{}, err
+	}
+	records := make([]RetrievalRecord, 0, len(articles))
+	for _, article := range articles {
+		records = append(records, article.ToRetrievalRecord())
+	}
+	return RetrievalResponse{Records: records}, nil
+}
+
+func (q *Qdrant) RetrievalCryptoArticle24H(ctx context.Context, req RetrievalRequest) (RetrievalResponse, error) {
+	articles, err := q.SearchCryptoArticle(ctx, req.Query, req.Settings.TopK, req.Settings.ScoreThreshold, 24*time.Hour)
 	if err != nil {
 		return RetrievalResponse{}, err
 	}

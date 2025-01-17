@@ -2,12 +2,13 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/guixu633/base-server/module/qdrant"
 )
 
 func (s *Service) GetCryptoArticle(ctx context.Context, query string, topk int, scoreThreshold float64) ([]*qdrant.CryptoArticle, error) {
-	return s.qdrant.SearchCryptoArticle(ctx, query, topk, scoreThreshold)
+	return s.qdrant.SearchCryptoArticle(ctx, query, topk, scoreThreshold, 24*time.Hour)
 }
 
 func (s *Service) UpsertCryptoArticle(ctx context.Context, article *qdrant.CryptoArticle) error {
