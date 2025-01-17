@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"context"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
@@ -26,7 +27,8 @@ func (b *TGBot) Response() {
 		}
 		b.users[chatID] = convID
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, answer)
+		escapedAnswer := escapeMarkdownV2(answer)
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, escapedAnswer)
 		msg.ParseMode = tgbotapi.ModeMarkdownV2
 		// msg.ReplyToMessageID = update.Message.MessageID
 
@@ -35,4 +37,13 @@ func (b *TGBot) Response() {
 			continue
 		}
 	}
+}
+
+func escapeMarkdownV2(text string) string {
+	specialChars := []string{"_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"}
+	escaped := text
+	for _, char := range specialChars {
+		escaped = strings.ReplaceAll(escaped, char, "\\"+char)
+	}
+	return escaped
 }
