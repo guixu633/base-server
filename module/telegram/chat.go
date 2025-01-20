@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -59,16 +60,48 @@ func (b *TGBot) Response() {
 	}
 }
 
+const (
+	StartResponse = `Welcome to TokenSense! 🚀
+The most reliable crypto tools before you enter the market.
+Join our community:
+ 📱 Twitter: https://x.com/TokenSenseAI
+ 💬 Telegram Group: https://t.me/tokensense01
+=================
+ Quick Access:
+🔸 BTC
+🔸 ETH
+🔸 Trump
+🔸 SOL
+❓ Help
+🌍 News`
+	HelpResponse = `📖 Help Center - Quick Guide
+Find detailed documentation at:
+https://github.com/Tokensense-ai/Tokensense
+For more assistance:
+ • Visit our docs for complete features & tutorials
+ • Join our Telegram community for real-time support：https://t.me/tokensense01
+ • Follow us on Twitter for updates & tips：: https://x.com/TokenSenseAI`
+)
+
 // 添加新的命令处理函数
 func (b *TGBot) handleCommand(message *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(message.Chat.ID, "")
 
 	switch message.Text {
 	case "/start":
-		msg.Text = "欢迎使用本机器人！"
+		msg.Text = StartResponse
 	case "/help":
-		msg.Text = "这是帮助信息..."
+		msg.Text = HelpResponse
+	case "/menu":
+		msg.Text = StartResponse
+	case "/news":
+		msg.Text = "即将上线"
 	default:
+		if strings.HasPrefix(message.Text, "/price") {
+			coin := strings.TrimPrefix(message.Text, "/price ")
+			msg.Text = fmt.Sprintf("对 %s 的分析即将上线", coin)
+			return
+		}
 		msg.Text = "未知命令，请使用 /help 查看可用命令"
 	}
 	msg.ReplyToMessageID = message.MessageID

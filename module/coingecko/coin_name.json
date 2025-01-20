@@ -1,5 +1,7 @@
 {
     "bitcoin": ["Bitcoin", "比特币", "BTC"],
+    "official-trump": ["川普币", "Trump Official", "Trump"],
+    "melania-meme": ["梅拉尼娅", "Melania Meme", "MELANIA"],
     "ethereum": ["Ethereum", "以太坊", "ETH"],
     "ripple": ["Ripple", "瑞波币", "XRP"],
     "binancecoin": ["BNB", "币安币", "BNB"],
