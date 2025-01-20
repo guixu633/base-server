@@ -46,10 +46,15 @@ type Qdrant struct {
 }
 
 type Embedding struct {
-	Url       string `toml:"url"`
-	ApiKey    string `toml:"api_key"`
-	Model     string `toml:"model"`
-	Dimension int    `toml:"dimension"`
+	Engine          string `toml:"engine"`
+	QwenUrl         string `toml:"qwen_url"`
+	QwenApiKey      string `toml:"qwen_api_key"`
+	QwenModel       string `toml:"qwen_model"`
+	QwenDimension   int    `toml:"qwen_dimension"`
+	OpenaiUrl       string `toml:"openai_url"`
+	OpenaiApiKey    string `toml:"openai_api_key"`
+	OpenaiModel     string `toml:"openai_model"`
+	OpenaiDimension int    `toml:"openai_dimension"`
 }
 
 type CryptoArticle struct {

@@ -158,3 +158,15 @@ func (q *Qdrant) RetrievalCryptoArticle24H(ctx context.Context, req RetrievalReq
 	}
 	return RetrievalResponse{Records: records}, nil
 }
+
+func (q *Qdrant) RetrievalCryptoArticle100D(ctx context.Context, req RetrievalRequest) (RetrievalResponse, error) {
+	articles, err := q.SearchCryptoArticle(ctx, req.Query, req.Settings.TopK, req.Settings.ScoreThreshold, 100*24*time.Hour)
+	if err != nil {
+		return RetrievalResponse{}, err
+	}
+	records := make([]RetrievalRecord, 0, len(articles))
+	for _, article := range articles {
+		records = append(records, article.ToRetrievalRecord())
+	}
+	return RetrievalResponse{Records: records}, nil
+}

@@ -37,6 +37,12 @@ func TestCreateCollection(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestDeleteCollection(t *testing.T) {
+	qdrant := getQdrant(t)
+	err := qdrant.DeleteCollection(context.Background(), "crypto_article")
+	assert.NoError(t, err)
+}
+
 func TestUpsert(t *testing.T) {
 	vdb := getQdrant(t)
 	title := "哈哈哈"

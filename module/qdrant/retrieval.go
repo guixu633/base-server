@@ -33,6 +33,8 @@ func (q *Qdrant) Retrieval(ctx context.Context, req RetrievalRequest) (Retrieval
 		return q.RetrievalCryptoArticle1H(ctx, req)
 	case "crypto_article_24h":
 		return q.RetrievalCryptoArticle24H(ctx, req)
+	case "crypto_article_100d":
+		return q.RetrievalCryptoArticle100D(ctx, req)
 	default:
 		return RetrievalResponse{}, fmt.Errorf("unknown knowledge id: %s", req.KnowledgeID)
 	}

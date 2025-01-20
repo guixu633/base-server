@@ -15,10 +15,10 @@ type Qdrant struct {
 	cfg              *config.Qdrant
 	cfgCryptoArticle *config.CryptoArticle
 	client           *qdrant.Client
-	embedEngine      *embedding.EmbedEngine
+	embedEngine      embedding.EmbedEngine
 }
 
-func NewClient(cfg *config.Qdrant, cfgCryptoArticle *config.CryptoArticle, embedEngine *embedding.EmbedEngine) (*Qdrant, error) {
+func NewClient(cfg *config.Qdrant, cfgCryptoArticle *config.CryptoArticle, embedEngine embedding.EmbedEngine) (*Qdrant, error) {
 	client, err := qdrant.NewClient(&qdrant.Config{
 		Host:   cfg.Host,
 		Port:   cfg.Port,
@@ -46,6 +46,10 @@ func (q *Qdrant) InitVdb(ctx context.Context) error {
 
 func (q *Qdrant) ListCollection(ctx context.Context) ([]string, error) {
 	return q.client.ListCollections(ctx)
+}
+
+func (q *Qdrant) DeleteCollection(ctx context.Context, collectionName string) error {
+	return q.client.DeleteCollection(ctx, collectionName)
 }
 
 func (q *Qdrant) CreateCollection(ctx context.Context, collectionName string) error {
@@ -78,10 +82,6 @@ func CreateIfNotExists(q *Qdrant, collectionName string) error {
 	}
 	logrus.WithField("collection", collectionName).Info("collection created")
 	return nil
-}
-
-func (q *Qdrant) DeleteCollection(ctx context.Context, collectionName string) error {
-	return q.client.DeleteCollection(ctx, collectionName)
 }
 
 func (q *Qdrant) Upsert(ctx context.Context, collectionName string, id, data string, params map[string]any) error {
