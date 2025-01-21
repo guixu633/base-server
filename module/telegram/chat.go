@@ -95,7 +95,11 @@ func (b *TGBot) handleCommand(message *tgbotapi.Message) {
 	case "/menu":
 		msg.Text = StartResponse
 	case "/news":
-		msg.Text = "即将上线"
+		news, err := b.db.GetLatestNews(context.Background())
+		if err != nil {
+			msg.Text = "获取新闻失败"
+		}
+		msg.Text = news
 	default:
 		if strings.HasPrefix(message.Text, "/predict") {
 			coin := strings.TrimPrefix(message.Text, "/predict ")
