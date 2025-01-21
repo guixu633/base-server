@@ -47,11 +47,11 @@ func NewService(cfg *config.Config) (*Service, error) {
 	}
 
 	workflow := workflow.NewWorkflow(&cfg.Workflow, client)
-	// bot, err := telegram.GetBot(&cfg.Telegram, workflow, client)
-	// if err != nil {
-	// 	logrus.WithField("err", err).Error("初始化telegram失败")
-	// 	return nil, err
-	// }
+	bot, err := telegram.GetBot(&cfg.Telegram, workflow, client)
+	if err != nil {
+		logrus.WithField("err", err).Error("初始化telegram失败")
+		return nil, err
+	}
 
 	embedEngine := embedding.NewEmbedEngine(&cfg.Embedding, client)
 
@@ -70,16 +70,16 @@ func NewService(cfg *config.Config) (*Service, error) {
 	coingecko := coingecko.NewCoingecko(&cfg.Coingecko, client)
 
 	svc := &Service{
-		client:   client,
-		oss:      oss,
-		cfg:      cfg,
-		workflow: workflow,
-		// telegram:  bot,
+		client:    client,
+		oss:       oss,
+		cfg:       cfg,
+		workflow:  workflow,
+		telegram:  bot,
 		qdrant:    qdrant,
 		coingecko: coingecko,
 	}
 
-	// go bot.Response()
+	go bot.Response()
 
 	return svc, nil
 }
