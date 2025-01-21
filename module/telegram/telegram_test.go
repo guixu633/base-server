@@ -10,6 +10,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/guixu633/base-server/module/config"
+	"github.com/guixu633/base-server/module/db"
 	"github.com/guixu633/base-server/module/workflow"
 	"github.com/stretchr/testify/assert"
 )
@@ -132,7 +133,10 @@ func getBot(t *testing.T) *TGBot {
 		Timeout: time.Second * 10,
 	}
 
-	bot, err := GetBot(&cfg.Telegram, workflow, client)
+	db, err := db.NewDB(cfg.Postgres)
+	assert.NoError(t, err)
+
+	bot, err := GetBot(&cfg.Telegram, workflow, client, db)
 	assert.NoError(t, err)
 	bot.bot.Debug = true
 	return bot

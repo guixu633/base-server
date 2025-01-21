@@ -97,12 +97,18 @@ func (b *TGBot) handleCommand(message *tgbotapi.Message) {
 	case "/news":
 		msg.Text = "即将上线"
 	default:
-		if strings.HasPrefix(message.Text, "/price") {
-			coin := strings.TrimPrefix(message.Text, "/price ")
-			msg.Text = fmt.Sprintf("对 %s 的分析即将上线", coin)
-			return
+		if strings.HasPrefix(message.Text, "/predict") {
+			coin := strings.TrimPrefix(message.Text, "/predict ")
+			msg.Text = fmt.Sprintf("对 [%s] 的分析即将上线", coin)
+			analysis, err := b.db.GetLatestCoinAnalysis(context.Background(), coin)
+			if err != nil {
+				msg.Text = fmt.Sprintf("没有查询到币种 [%s] 的分析结果", coin)
+			}
+			msg.Text = analysis
+		} else {
+			msg.Text = "未知命令，请使用 /help 查看可用命令"
+
 		}
-		msg.Text = "未知命令，请使用 /help 查看可用命令"
 	}
 	msg.ReplyToMessageID = message.MessageID
 	if _, err := b.bot.Send(msg); err != nil {

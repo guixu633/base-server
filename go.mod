@@ -13,6 +13,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gordonklaus/portaudio v0.0.0-20230709114228-aafa478834f5
 	github.com/gorilla/websocket v1.5.3
+	github.com/lib/pq v1.10.9
 	github.com/qdrant/go-client v1.12.0
 	github.com/robotn/gohook v0.41.0
 	github.com/satori/go.uuid v1.2.0

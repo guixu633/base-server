@@ -12,6 +12,7 @@ type Config struct {
 	Embedding     Embedding     `toml:"embedding"`
 	CryptoArticle CryptoArticle `toml:"crypto_article"`
 	Coingecko     Coingecko     `toml:"coingecko"`
+	Postgres      Postgres      `toml:"postgres"`
 }
 
 type Meta struct {
@@ -67,6 +68,14 @@ type CryptoArticle struct {
 type Coingecko struct {
 	Url    string `toml:"url"`
 	ApiKey string `toml:"api_key"`
+}
+
+type Postgres struct {
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
+	Dbname   string `toml:"dbname"`
 }
 
 func LoadConfig(path string) (*Config, error) {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/guixu633/base-server/module/coingecko"
 	"github.com/guixu633/base-server/module/config"
+	"github.com/guixu633/base-server/module/db"
 	"github.com/guixu633/base-server/module/embedding"
 	"github.com/guixu633/base-server/module/oss"
 	"github.com/guixu633/base-server/module/qdrant"
@@ -47,7 +48,12 @@ func NewService(cfg *config.Config) (*Service, error) {
 	}
 
 	workflow := workflow.NewWorkflow(&cfg.Workflow, client)
-	bot, err := telegram.GetBot(&cfg.Telegram, workflow, client)
+	db, err := db.NewDB(cfg.Postgres)
+	if err != nil {
+		logrus.WithField("err", err).Error("初始化db失败")
+		return nil, err
+	}
+	bot, err := telegram.GetBot(&cfg.Telegram, workflow, client, db)
 	if err != nil {
 		logrus.WithField("err", err).Error("初始化telegram失败")
 		return nil, err
