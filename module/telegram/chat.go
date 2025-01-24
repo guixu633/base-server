@@ -15,6 +15,11 @@ func (b *TGBot) Response() {
 	updates := b.bot.GetUpdatesChan(updateConfig)
 
 	for update := range updates {
+		// 处理回调查询
+		if update.CallbackQuery != nil {
+			b.handleCallbackQuery(update)
+			continue
+		}
 
 		if update.Message == nil {
 			continue
@@ -66,14 +71,7 @@ The most reliable crypto tools before you enter the market.
 Join our community:
  📱 Twitter: https://x.com/TokenSenseAI
  💬 Telegram Group: https://t.me/tokensense01
-=================
- Quick Access:
-🔸 BTC
-🔸 ETH
-🔸 Trump
-🔸 SOL
-❓ Help
-🌍 News`
+=================`
 	HelpResponse = `📖 Help Center - Quick Guide
 Find detailed documentation at:
 https://github.com/Tokensense-ai/Tokensense
@@ -83,13 +81,29 @@ For more assistance:
  • Follow us on Twitter for updates & tips：: https://x.com/TokenSenseAI`
 )
 
-// 添加新的命令处理函数
+// 修改命令处理函数
 func (b *TGBot) handleCommand(message *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(message.Chat.ID, "")
 
 	switch message.Text {
 	case "/start":
 		msg.Text = StartResponse
+		// 创建按钮键盘
+		keyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("BTC", "/predict BTC"),
+				tgbotapi.NewInlineKeyboardButtonData("ETH", "/predict ETH"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("TRUMP", "/predict TRUMP"),
+				tgbotapi.NewInlineKeyboardButtonData("SOL", "/predict SOL"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("❓ Help", "/help"),
+				tgbotapi.NewInlineKeyboardButtonData("🌍 News", "/news"),
+			),
+		)
+		msg.ReplyMarkup = keyboard
 	case "/help":
 		msg.Text = HelpResponse
 	case "/menu":
@@ -118,6 +132,25 @@ func (b *TGBot) handleCommand(message *tgbotapi.Message) {
 	if _, err := b.bot.Send(msg); err != nil {
 		logrus.Errorf("发送命令响应消息错误: %v", err)
 	}
+}
+
+// 添加处理回调查询的函数
+func (b *TGBot) handleCallbackQuery(update tgbotapi.Update) {
+	callback := update.CallbackQuery
+	// 创建一个新的消息对象，模拟用户发送命令
+	cmdMessage := tgbotapi.Message{
+		MessageID: callback.Message.MessageID,
+		From:      callback.From,
+		Chat:      callback.Message.Chat,
+		Text:      callback.Data,
+	}
+
+	// 处理命令
+	b.handleCommand(&cmdMessage)
+
+	// 回应回调查询
+	callbackResponse := tgbotapi.NewCallback(callback.ID, "")
+	b.bot.Request(callbackResponse)
 }
 
 // 添加新的辅助方法
