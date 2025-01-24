@@ -29,7 +29,7 @@ func (w *Workflow) CallChatflowBlock(ctx context.Context, token, query, conversa
 	requestBody := &ChatflowRequest{
 		Inputs:         inputs,
 		ResponseMode:   "blocking",
-		User:           "guixu633",
+		User:           "token sense telegram bot",
 		Query:          query,
 		ConversationId: conversationId,
 	}
