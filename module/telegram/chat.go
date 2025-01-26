@@ -85,7 +85,7 @@ For more assistance:
 	HelpCommandDescription    = "获取帮助信息"
 	MenuCommandDescription    = "显示主菜单"
 	NewsCommandDescription    = "获取最新新闻"
-	PredictCommandDescription = "分析加密货币"
+	PredictCommandDescription = "分析加密货币, 例如 /predict BTC"
 )
 
 // 修改命令处理函数
