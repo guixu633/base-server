@@ -79,6 +79,13 @@ For more assistance:
  • Visit our docs for complete features & tutorials
  • Join our Telegram community for real-time support：https://t.me/tokensense01
  • Follow us on Twitter for updates & tips：: https://x.com/TokenSenseAI`
+
+	// 添加命令描述常量
+	StartCommandDescription   = "开始使用 TokenSense"
+	HelpCommandDescription    = "获取帮助信息"
+	MenuCommandDescription    = "显示主菜单"
+	NewsCommandDescription    = "获取最新新闻"
+	PredictCommandDescription = "分析加密货币"
 )
 
 // 修改命令处理函数
@@ -198,4 +205,33 @@ func (b *TGBot) cleanMessageText(message *tgbotapi.Message) string {
 		}
 	}
 	return text
+}
+
+// 添加一个新的初始化命令列表的方法
+func (b *TGBot) initCommands() error {
+	commands := []tgbotapi.BotCommand{
+		{
+			Command:     "start",
+			Description: StartCommandDescription,
+		},
+		{
+			Command:     "help",
+			Description: HelpCommandDescription,
+		},
+		{
+			Command:     "menu",
+			Description: MenuCommandDescription,
+		},
+		{
+			Command:     "news",
+			Description: NewsCommandDescription,
+		},
+		{
+			Command:     "predict",
+			Description: PredictCommandDescription,
+		},
+	}
+
+	_, err := b.bot.Request(tgbotapi.NewSetMyCommands(commands...))
+	return err
 }
