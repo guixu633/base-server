@@ -26,13 +26,15 @@ func GetBot(cfg *config.Telegram, workflow *workflow.Workflow, client *http.Clie
 	if err != nil {
 		return nil, err
 	}
-	return &TGBot{
+	b := &TGBot{
 		cfg:      cfg,
 		bot:      bot,
 		workflow: workflow,
 		db:       db,
 		users:    make(map[int64]string),
-	}, nil
+	}
+	b.initCommands()
+	return b, nil
 }
 
 func formatTelegramMessage(text string) string {

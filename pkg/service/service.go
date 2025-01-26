@@ -58,7 +58,6 @@ func NewService(cfg *config.Config) (*Service, error) {
 		logrus.WithField("err", err).Error("初始化telegram失败")
 		return nil, err
 	}
-
 	embedEngine := embedding.NewEmbedEngine(&cfg.Embedding, client)
 
 	qdrant, err := qdrant.NewClient(&cfg.Qdrant, &cfg.CryptoArticle, embedEngine)
